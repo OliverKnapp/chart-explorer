@@ -12,19 +12,19 @@ export function buildEChartsOption(
   selectedXKey?: string,
   selectedYKey?: string
 ): EChartsOption {
-  // Determine X and Y columns
-  const xCol = dataset.columns.find(c => c.key === selectedXKey) || dataset.columns[0];
-  const yCol = dataset.columns.find(c => c.key === selectedYKey) || dataset.columns.find(c => c.type === 'numeric') || dataset.columns[1];
+  // Determine X and Y columns with safe fallbacks
+  const xCol = dataset.columns.find(c => c.key === selectedXKey) || dataset.columns[0] || { key: 'x', label: 'X', type: 'categorical' as const };
+  const yCol = dataset.columns.find(c => c.key === selectedYKey) || dataset.columns.find(c => c.type === 'numeric') || dataset.columns[1] || dataset.columns[0] || { key: 'y', label: 'Y', type: 'numeric' as const };
 
   const xKey = xCol.key;
   const yKey = yCol.key;
 
-  const rawData = dataset.data;
+  const rawData = dataset.data || [];
 
-  // Base animation config for Universal Transition
+  // Consistent animation config across all chart types
   const baseAnimation = {
-    animationDuration: 900,
-    animationDurationUpdate: 900,
+    animationDuration: 750,
+    animationDurationUpdate: 750,
     animationEasing: 'cubicInOut' as const,
     animationEasingUpdate: 'cubicInOut' as const,
   };
@@ -43,6 +43,17 @@ export function buildEChartsOption(
     extraCssText: 'box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.08); border-radius: 8px;',
   };
 
+  const monochromeColors = [
+    COBALT,
+    '#18181B',
+    '#3F3F46',
+    '#52525B',
+    '#71717A',
+    '#A1A1AA',
+    '#27272A',
+    '#003887',
+  ];
+
   switch (chartType) {
     case 'bar': {
       return {
@@ -51,7 +62,7 @@ export function buildEChartsOption(
         grid: { top: 40, right: 30, bottom: 60, left: 60, containLabel: true },
         xAxis: {
           type: 'category',
-          data: rawData.map(d => String(d[xKey])),
+          data: rawData.map(d => String(d[xKey] ?? '')),
           axisLine: { lineStyle: { color: MATTE_LIGHT_GRAY } },
           axisLabel: { color: MATTE_GRAY, fontFamily: 'Inter, sans-serif', fontSize: 11, rotate: rawData.length > 8 ? 30 : 0 },
           axisTick: { show: false },
@@ -67,13 +78,13 @@ export function buildEChartsOption(
           {
             type: 'bar',
             id: 'dataset-series',
-            universalTransition: true,
+            universalTransition: { enabled: true, divideShape: 'clone' },
             data: rawData.map((d, i) => ({
               id: `item-${i}`,
-              name: String(d[xKey]),
+              name: String(d[xKey] ?? ''),
               value: Number(d[yKey]) || 0,
               itemStyle: {
-                color: i === 0 ? COBALT : (i % 2 === 0 ? '#18181B' : '#3F3F46'),
+                color: i === 0 ? COBALT : monochromeColors[i % monochromeColors.length],
                 borderRadius: [4, 4, 0, 0],
               },
             })),
@@ -90,7 +101,7 @@ export function buildEChartsOption(
         grid: { top: 40, right: 30, bottom: 60, left: 60, containLabel: true },
         xAxis: {
           type: 'category',
-          data: rawData.map(d => String(d[xKey])),
+          data: rawData.map(d => String(d[xKey] ?? '')),
           axisLine: { lineStyle: { color: MATTE_LIGHT_GRAY } },
           axisLabel: { color: MATTE_GRAY, fontFamily: 'Inter, sans-serif', fontSize: 11, rotate: rawData.length > 8 ? 30 : 0 },
           axisTick: { show: false },
@@ -106,21 +117,21 @@ export function buildEChartsOption(
           {
             type: 'line',
             id: 'dataset-series',
-            universalTransition: true,
+            universalTransition: { enabled: true, divideShape: 'clone' },
             smooth: 0.2,
             data: rawData.map((d, i) => ({
               id: `item-${i}`,
-              name: String(d[xKey]),
+              name: String(d[xKey] ?? ''),
               value: Number(d[yKey]) || 0,
+              itemStyle: {
+                color: i === 0 ? COBALT : MATTE_BLACK,
+                borderColor: '#FFFFFF',
+                borderWidth: 2,
+              },
             })),
             lineStyle: {
               color: COBALT,
               width: 2.5,
-            },
-            itemStyle: {
-              color: MATTE_BLACK,
-              borderColor: '#FFFFFF',
-              borderWidth: 2,
             },
             symbolSize: 8,
           },
@@ -135,7 +146,7 @@ export function buildEChartsOption(
         grid: { top: 40, right: 30, bottom: 60, left: 60, containLabel: true },
         xAxis: {
           type: 'category',
-          data: rawData.map(d => String(d[xKey])),
+          data: rawData.map(d => String(d[xKey] ?? '')),
           axisLine: { lineStyle: { color: MATTE_LIGHT_GRAY } },
           axisLabel: { color: MATTE_GRAY, fontFamily: 'Inter, sans-serif', fontSize: 11, rotate: rawData.length > 8 ? 30 : 0 },
         },
@@ -149,12 +160,12 @@ export function buildEChartsOption(
           {
             type: 'scatter',
             id: 'dataset-series',
-            universalTransition: true,
+            universalTransition: { enabled: true, divideShape: 'clone' },
             symbolSize: 14,
             data: rawData.map((d, i) => ({
               id: `item-${i}`,
-              name: String(d[xKey]),
-              value: [String(d[xKey]), Number(d[yKey]) || 0],
+              name: String(d[xKey] ?? ''),
+              value: Number(d[yKey]) || 0,
               itemStyle: {
                 color: i % 2 === 0 ? COBALT : MATTE_BLACK,
                 borderColor: '#FFFFFF',
@@ -174,7 +185,7 @@ export function buildEChartsOption(
           {
             type: 'pie',
             id: 'dataset-series',
-            universalTransition: true,
+            universalTransition: { enabled: true, divideShape: 'clone' },
             radius: ['35%', '70%'],
             center: ['50%', '50%'],
             itemStyle: {
@@ -188,39 +199,58 @@ export function buildEChartsOption(
               fontSize: 11,
               formatter: '{b}: {c}',
             },
-            data: rawData.map((d, i) => {
-              const monochromeColors = [
-                COBALT,
-                '#18181B',
-                '#3F3F46',
-                '#52525B',
-                '#71717A',
-                '#A1A1AA',
-                '#D4D4D8',
-                '#27272A',
-              ];
-              return {
-                id: `item-${i}`,
-                name: String(d[xKey]),
-                value: Math.abs(Number(d[yKey])) || 1, // Pie cannot handle negative numbers gracefully!
-                itemStyle: {
-                  color: monochromeColors[i % monochromeColors.length],
-                },
-              };
-            }),
+            data: rawData.map((d, i) => ({
+              id: `item-${i}`,
+              name: String(d[xKey] ?? ''),
+              value: Math.max(0.01, Math.abs(Number(d[yKey])) || 0.1),
+              itemStyle: {
+                color: monochromeColors[i % monochromeColors.length],
+              },
+            })),
+          },
+        ],
+      };
+    }
+
+    case 'treemap': {
+      return {
+        ...baseAnimation,
+        tooltip: commonTooltip,
+        series: [
+          {
+            type: 'treemap',
+            id: 'dataset-series',
+            universalTransition: { enabled: true, divideShape: 'clone' },
+            roam: false,
+            nodeClick: false,
+            breadcrumb: { show: false },
+            itemStyle: {
+              borderColor: '#FFFFFF',
+              borderWidth: 2,
+              gapWidth: 2,
+            },
+            data: rawData.map((d, i) => ({
+              id: `item-${i}`,
+              name: String(d[xKey] ?? ''),
+              value: Math.max(0.01, Math.abs(Number(d[yKey])) || 0.1),
+              itemStyle: {
+                color: monochromeColors[i % monochromeColors.length],
+              },
+            })),
           },
         ],
       };
     }
 
     case 'radar': {
-      const maxVal = Math.max(...rawData.map(d => Math.abs(Number(d[yKey]) || 1))) * 1.15;
+      const numbers = rawData.map(d => Math.abs(Number(d[yKey])) || 0);
+      const maxVal = Math.max(1, ...numbers) * 1.15;
       return {
         ...baseAnimation,
         tooltip: commonTooltip,
         radar: {
           indicator: rawData.map(d => ({
-            name: String(d[xKey]),
+            name: String(d[xKey] ?? ''),
             max: maxVal,
           })),
           axisName: {
@@ -248,8 +278,7 @@ export function buildEChartsOption(
         series: [
           {
             type: 'radar',
-            id: 'dataset-series',
-            universalTransition: true,
+            id: 'radar-series',
             data: [
               {
                 value: rawData.map(d => Math.abs(Number(d[yKey])) || 0),
@@ -271,61 +300,18 @@ export function buildEChartsOption(
       };
     }
 
-    case 'treemap': {
-      return {
-        ...baseAnimation,
-        tooltip: commonTooltip,
-        series: [
-          {
-            type: 'treemap',
-            id: 'dataset-series',
-            universalTransition: true,
-            roam: false,
-            nodeClick: false,
-            breadcrumb: { show: false },
-            itemStyle: {
-              borderColor: '#FFFFFF',
-              borderWidth: 2,
-              gapWidth: 2,
-            },
-            data: rawData.map((d, i) => {
-              const treemapColors = [
-                COBALT,
-                '#18181B',
-                '#27272A',
-                '#3F3F46',
-                '#52525B',
-                '#71717A',
-                '#A1A1AA',
-                '#003887',
-              ];
-              return {
-                id: `item-${i}`,
-                name: String(d[xKey]),
-                value: Math.abs(Number(d[yKey])) || 1,
-                itemStyle: {
-                  color: treemapColors[i % treemapColors.length],
-                },
-              };
-            }),
-          },
-        ],
-      };
-    }
-
     case 'heatmap': {
-      // Create a 2D grid matrix
-      const categories = rawData.map(d => String(d[xKey]));
-      const metrics = [yCol.label, 'Index'];
+      const categories = rawData.map(d => String(d[xKey] ?? ''));
+      const metrics = [yCol.label, 'Referenz'];
       const heatmapData: [number, number, number][] = [];
 
       rawData.forEach((_, i) => {
-        const val = Math.abs(Number(rawData[i][yKey])) || 0;
+        const val = Math.abs(Number(rawData[i]?.[yKey])) || 0;
         heatmapData.push([i, 0, val]);
         heatmapData.push([i, 1, Math.round(val * 0.75)]);
       });
 
-      const maxVal = Math.max(...rawData.map(d => Math.abs(Number(d[yKey])) || 1));
+      const maxVal = Math.max(1, ...rawData.map(d => Math.abs(Number(d[yKey])) || 0));
 
       return {
         ...baseAnimation,
@@ -362,8 +348,7 @@ export function buildEChartsOption(
         series: [
           {
             type: 'heatmap',
-            id: 'dataset-series',
-            universalTransition: true,
+            id: 'heatmap-series',
             data: heatmapData,
             itemStyle: {
               borderColor: '#FFFFFF',

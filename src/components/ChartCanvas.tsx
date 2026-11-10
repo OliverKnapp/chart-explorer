@@ -22,13 +22,20 @@ export const ChartCanvas: React.FC<ChartCanvasProps> = ({
   const chartInstanceRef = useRef<echarts.ECharts | null>(null);
 
   // Column mapping states
-  const [selectedX, setSelectedX] = useState<string>(dataset.columns[0]?.key || '');
-  const [selectedY, setSelectedY] = useState<string>(
-    dataset.columns.find(c => c.type === 'numeric')?.key || dataset.columns[1]?.key || ''
-  );
+  const [selectedX, setSelectedX] = useState<string>('');
+  const [selectedY, setSelectedY] = useState<string>('');
   const [showMapping, setShowMapping] = useState<boolean>(false);
 
-  // Reset mapping when dataset changes
+  // Derive sanitized X and Y keys immediately for the current dataset
+  const activeX = dataset.columns.some(c => c.key === selectedX)
+    ? selectedX
+    : (dataset.columns[0]?.key || '');
+
+  const activeY = dataset.columns.some(c => c.key === selectedY)
+    ? selectedY
+    : (dataset.columns.find(c => c.type === 'numeric')?.key || dataset.columns[1]?.key || dataset.columns[0]?.key || '');
+
+  // Reset mapping when dataset id changes
   useEffect(() => {
     setSelectedX(dataset.columns[0]?.key || '');
     setSelectedY(dataset.columns.find(c => c.type === 'numeric')?.key || dataset.columns[1]?.key || '');
@@ -37,15 +44,30 @@ export const ChartCanvas: React.FC<ChartCanvasProps> = ({
   useEffect(() => {
     if (!chartRef.current) return;
 
-    if (!chartInstanceRef.current) {
+    if (!chartInstanceRef.current || chartInstanceRef.current.isDisposed()) {
       chartInstanceRef.current = echarts.init(chartRef.current, undefined, {
         renderer: 'canvas',
       });
     }
 
-    const option = buildEChartsOption(dataset, chartType, selectedX, selectedY);
-    // Use notMerge: false so universalTransition can smoothly interpolate series
-    chartInstanceRef.current.setOption(option, { notMerge: false, lazyUpdate: false });
+    const option = buildEChartsOption(dataset, chartType, activeX, activeY);
+
+    try {
+      // Pass true (notMerge: true) to clean up old axes, grids, radars, or visualMaps!
+      // Universal Transition morphs series with matching id between options.
+      chartInstanceRef.current.setOption(option, true);
+    } catch (err) {
+      console.warn('ECharts rendering error, auto-recovering instance:', err);
+      try {
+        chartInstanceRef.current.dispose();
+        chartInstanceRef.current = echarts.init(chartRef.current, undefined, {
+          renderer: 'canvas',
+        });
+        chartInstanceRef.current.setOption(option, true);
+      } catch (recoveryErr) {
+        console.error('Fatal recovery error:', recoveryErr);
+      }
+    }
 
     const resizeObserver = new ResizeObserver(() => {
       chartInstanceRef.current?.resize();
@@ -55,9 +77,9 @@ export const ChartCanvas: React.FC<ChartCanvasProps> = ({
     return () => {
       resizeObserver.disconnect();
     };
-  }, [dataset, chartType, selectedX, selectedY]);
+  }, [dataset, chartType, activeX, activeY]);
 
-  // Clean up on unmount
+  // Clean up on component unmount
   useEffect(() => {
     return () => {
       chartInstanceRef.current?.dispose();
@@ -161,7 +183,7 @@ export const ChartCanvas: React.FC<ChartCanvasProps> = ({
           <div className="flex items-center space-x-2">
             <span className="text-matte-muted font-medium">Primär-Achse / Kategorie (X):</span>
             <select
-              value={selectedX}
+              value={activeX}
               onChange={e => setSelectedX(e.target.value)}
               className="bg-white border border-matte-border rounded px-2 py-1 text-xs text-matte-black focus:outline-none focus:border-cobalt"
             >
@@ -176,7 +198,7 @@ export const ChartCanvas: React.FC<ChartCanvasProps> = ({
           <div className="flex items-center space-x-2">
             <span className="text-matte-muted font-medium">Wert-Achse / Metrik (Y):</span>
             <select
-              value={selectedY}
+              value={activeY}
               onChange={e => setSelectedY(e.target.value)}
               className="bg-white border border-matte-border rounded px-2 py-1 text-xs text-matte-black focus:outline-none focus:border-cobalt"
             >
