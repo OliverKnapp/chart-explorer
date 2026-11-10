@@ -6,7 +6,7 @@ import { FloatingDock } from './components/FloatingDock';
 import { DiagnosticDrawer } from './components/DiagnosticDrawer';
 import { DocumentationModal } from './components/DocumentationModal';
 import { CsvUploadModal } from './components/CsvUploadModal';
-import { FileText } from 'lucide-react';
+import { FileText, Columns2, Square } from 'lucide-react';
 
 export function App() {
   const [datasets, setDatasets] = useState<Dataset[]>(CURATED_DATASETS);
@@ -39,7 +39,7 @@ export function App() {
     <div className="min-h-screen bg-white text-matte-black flex flex-col font-sans pb-32">
       {/* Main Workspace */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 pt-6 pb-2 flex flex-col">
-        {/* Top Header Row with Dataset Information and Dokumentation Button */}
+        {/* Top Header Row with Dataset Information, Split-View Toggle and Dokumentation Button */}
         <div className="mb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-matte-border pb-4">
           <div>
             <div className="flex items-center space-x-2">
@@ -60,14 +60,31 @@ export function App() {
             </h1>
           </div>
 
-          {/* Replaced Schnelltest Antipatterns with the Dokumentation Button */}
-          <button
-            onClick={() => setIsDocOpen(true)}
-            className="inline-flex items-center gap-2 text-xs font-semibold text-matte-black hover:text-cobalt bg-white hover:bg-matte-subtle border border-matte-border px-4 py-2 rounded-xl transition-all shadow-subtle shrink-0 self-start sm:self-auto cursor-pointer"
-          >
-            <FileText className="w-4 h-4 text-matte-black" />
-            <span>Dokumentation</span>
-          </button>
+          {/* Action buttons: Split-View Toggle and Dokumentation */}
+          <div className="flex items-center space-x-2.5 self-start sm:self-auto shrink-0">
+            {/* Split View Button */}
+            <button
+              onClick={() => setIsSplitView(!isSplitView)}
+              className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3.5 py-2 rounded-xl border transition-all cursor-pointer ${
+                isSplitView
+                  ? 'bg-cobalt text-white border-cobalt shadow-sm'
+                  : 'bg-white text-matte-black border-matte-border hover:bg-matte-subtle shadow-subtle'
+              }`}
+              title="Side-by-Side Vergleichsansicht"
+            >
+              {isSplitView ? <Square className="w-3.5 h-3.5" /> : <Columns2 className="w-3.5 h-3.5" />}
+              <span>{isSplitView ? 'Hero-Ansicht' : 'Split-View'}</span>
+            </button>
+
+            {/* Dokumentation Button */}
+            <button
+              onClick={() => setIsDocOpen(true)}
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-matte-black hover:text-cobalt bg-white hover:bg-matte-subtle border border-matte-border px-3.5 py-2 rounded-xl transition-all shadow-subtle cursor-pointer"
+            >
+              <FileText className="w-4 h-4 text-matte-black" />
+              <span>Dokumentation</span>
+            </button>
+          </div>
         </div>
 
         {/* Charts Container with strict height bounds to avoid any infinite flexbox growth */}
@@ -118,7 +135,6 @@ export function App() {
         secondaryChartType={secondaryChartType}
         onSelectSecondaryChartType={setSecondaryChartType}
         isSplitView={isSplitView}
-        onToggleSplitView={() => setIsSplitView(!isSplitView)}
         onOpenUpload={() => setIsUploadOpen(true)}
       />
 

@@ -21,12 +21,13 @@ export function buildEChartsOption(
 
   const rawData = dataset.data || [];
 
-  // Consistent animation config across all chart types
+  // Consistent high-performance animation configuration
   const baseAnimation = {
-    animationDuration: 750,
-    animationDurationUpdate: 750,
-    animationEasing: 'cubicInOut' as const,
-    animationEasingUpdate: 'cubicInOut' as const,
+    animation: true,
+    animationDuration: 700,
+    animationDurationUpdate: 700,
+    animationEasing: 'cubicOut' as const,
+    animationEasingUpdate: 'cubicOut' as const,
   };
 
   const commonTooltip = {
@@ -77,10 +78,9 @@ export function buildEChartsOption(
         series: [
           {
             type: 'bar',
-            id: 'dataset-series',
-            universalTransition: { enabled: true, divideShape: 'clone' },
+            id: 'bar-series',
             data: rawData.map((d, i) => ({
-              id: `item-${i}`,
+              id: `bar-${i}`,
               name: String(d[xKey] ?? ''),
               value: Number(d[yKey]) || 0,
               itemStyle: {
@@ -89,6 +89,8 @@ export function buildEChartsOption(
               },
             })),
             barMaxWidth: 38,
+            animationDuration: 750,
+            animationEasing: 'cubicOut',
           },
         ],
       };
@@ -116,11 +118,10 @@ export function buildEChartsOption(
         series: [
           {
             type: 'line',
-            id: 'dataset-series',
-            universalTransition: { enabled: true, divideShape: 'clone' },
+            id: 'line-series',
             smooth: 0.2,
             data: rawData.map((d, i) => ({
-              id: `item-${i}`,
+              id: `line-${i}`,
               name: String(d[xKey] ?? ''),
               value: Number(d[yKey]) || 0,
               itemStyle: {
@@ -134,6 +135,8 @@ export function buildEChartsOption(
               width: 2.5,
             },
             symbolSize: 8,
+            animationDuration: 750,
+            animationEasing: 'cubicOut',
           },
         ],
       };
@@ -159,11 +162,10 @@ export function buildEChartsOption(
         series: [
           {
             type: 'scatter',
-            id: 'dataset-series',
-            universalTransition: { enabled: true, divideShape: 'clone' },
+            id: 'scatter-series',
             symbolSize: 14,
             data: rawData.map((d, i) => ({
-              id: `item-${i}`,
+              id: `scatter-${i}`,
               name: String(d[xKey] ?? ''),
               value: Number(d[yKey]) || 0,
               itemStyle: {
@@ -172,6 +174,8 @@ export function buildEChartsOption(
                 borderWidth: 1.5,
               },
             })),
+            animationDuration: 750,
+            animationEasing: 'cubicOut',
           },
         ],
       };
@@ -184,10 +188,12 @@ export function buildEChartsOption(
         series: [
           {
             type: 'pie',
-            id: 'dataset-series',
-            universalTransition: { enabled: true, divideShape: 'clone' },
+            id: 'pie-series',
             radius: ['35%', '70%'],
             center: ['50%', '50%'],
+            animationType: 'expansion',
+            animationDuration: 750,
+            animationEasing: 'cubicOut',
             itemStyle: {
               borderRadius: 3,
               borderColor: '#FFFFFF',
@@ -200,7 +206,7 @@ export function buildEChartsOption(
               formatter: '{b}: {c}',
             },
             data: rawData.map((d, i) => ({
-              id: `item-${i}`,
+              id: `pie-${i}`,
               name: String(d[xKey] ?? ''),
               value: Math.max(0.01, Math.abs(Number(d[yKey])) || 0.1),
               itemStyle: {
@@ -219,18 +225,19 @@ export function buildEChartsOption(
         series: [
           {
             type: 'treemap',
-            id: 'dataset-series',
-            universalTransition: { enabled: true, divideShape: 'clone' },
+            id: 'treemap-series',
             roam: false,
             nodeClick: false,
             breadcrumb: { show: false },
+            animationDuration: 750,
+            animationEasing: 'cubicOut',
             itemStyle: {
               borderColor: '#FFFFFF',
               borderWidth: 2,
               gapWidth: 2,
             },
             data: rawData.map((d, i) => ({
-              id: `item-${i}`,
+              id: `treemap-${i}`,
               name: String(d[xKey] ?? ''),
               value: Math.max(0.01, Math.abs(Number(d[yKey])) || 0.1),
               itemStyle: {
@@ -279,6 +286,8 @@ export function buildEChartsOption(
           {
             type: 'radar',
             id: 'radar-series',
+            animationDuration: 750,
+            animationEasing: 'cubicOut',
             data: [
               {
                 value: rawData.map(d => Math.abs(Number(d[yKey])) || 0),
@@ -349,6 +358,8 @@ export function buildEChartsOption(
           {
             type: 'heatmap',
             id: 'heatmap-series',
+            animationDuration: 750,
+            animationEasing: 'cubicOut',
             data: heatmapData,
             itemStyle: {
               borderColor: '#FFFFFF',

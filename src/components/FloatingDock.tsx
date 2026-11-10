@@ -7,8 +7,6 @@ import {
   CircleDot,
   LayoutGrid,
   Grid,
-  Columns2,
-  Square,
   Upload,
   BookOpen,
 } from 'lucide-react';
@@ -23,7 +21,6 @@ interface FloatingDockProps {
   secondaryChartType?: ChartType;
   onSelectSecondaryChartType?: (type: ChartType) => void;
   isSplitView: boolean;
-  onToggleSplitView: () => void;
   onOpenUpload: () => void;
 }
 
@@ -36,7 +33,6 @@ export const FloatingDock: React.FC<FloatingDockProps> = ({
   secondaryChartType,
   onSelectSecondaryChartType,
   isSplitView,
-  onToggleSplitView,
   onOpenUpload,
 }) => {
   const chartButtons: { type: ChartType; label: string; icon: React.ReactNode }[] = [
@@ -84,7 +80,7 @@ export const FloatingDock: React.FC<FloatingDockProps> = ({
           {/* Upload Button */}
           <button
             onClick={onOpenUpload}
-            className="p-1.5 rounded-lg text-matte-muted hover:text-matte-black hover:bg-matte-subtle transition-colors"
+            className="p-1.5 rounded-lg text-matte-muted hover:text-matte-black hover:bg-matte-subtle transition-colors cursor-pointer"
             title="Eigenen CSV-Datensatz importieren"
             aria-label="CSV-Import"
           >
@@ -101,7 +97,7 @@ export const FloatingDock: React.FC<FloatingDockProps> = ({
               <button
                 key={btn.type}
                 onClick={() => onSelectChartType(btn.type)}
-                className={`relative px-2.5 py-1.5 rounded-xl text-xs font-medium flex items-center space-x-1.5 transition-all ${
+                className={`relative px-2.5 py-1.5 rounded-xl text-xs font-medium flex items-center space-x-1.5 transition-all cursor-pointer ${
                   isActive
                     ? 'bg-matte-black text-white shadow-sm'
                     : 'text-matte-black hover:bg-matte-subtle'
@@ -122,27 +118,9 @@ export const FloatingDock: React.FC<FloatingDockProps> = ({
             );
           })}
         </div>
-
-        {/* Separator */}
-        <div className="h-5 w-[1px] bg-matte-border" />
-
-        {/* Split View Toggle */}
-        <button
-          onClick={onToggleSplitView}
-          className={`px-2.5 py-1.5 rounded-xl text-xs font-medium flex items-center space-x-1.5 transition-colors border ${
-            isSplitView
-              ? 'bg-cobalt text-white border-cobalt'
-              : 'bg-white text-matte-black border-matte-border hover:bg-matte-subtle'
-          }`}
-          title="Side-by-Side Split View"
-          aria-label="Split View umschalten"
-        >
-          {isSplitView ? <Square className="w-3.5 h-3.5" /> : <Columns2 className="w-3.5 h-3.5" />}
-          <span className="hidden sm:inline">{isSplitView ? 'Hero' : 'Split-View'}</span>
-        </button>
       </div>
 
-      {/* Bubble 2: Spawnt nur im Split View für Diagramm B */}
+      {/* Bubble 2: Spawnt im Split View für Diagramm B */}
       {isSplitView && onSelectSecondaryChartType && secondaryChartType && (
         <div className="bg-white/95 backdrop-blur-md border border-matte-border rounded-2xl shadow-dock px-3 py-2 flex items-center space-x-2 sm:space-x-3 animate-in fade-in slide-in-from-bottom-2 duration-200">
           <span className="text-[11px] font-mono font-bold px-1.5 py-0.5 rounded bg-cobalt text-white shrink-0">
@@ -158,7 +136,7 @@ export const FloatingDock: React.FC<FloatingDockProps> = ({
                 <button
                   key={btn.type}
                   onClick={() => onSelectSecondaryChartType(btn.type)}
-                  className={`relative px-2.5 py-1.5 rounded-xl text-xs font-medium flex items-center space-x-1.5 transition-all ${
+                  className={`relative px-2.5 py-1.5 rounded-xl text-xs font-medium flex items-center space-x-1.5 transition-all cursor-pointer ${
                     isActive
                       ? 'bg-cobalt text-white shadow-sm'
                       : 'text-matte-black hover:bg-matte-subtle'

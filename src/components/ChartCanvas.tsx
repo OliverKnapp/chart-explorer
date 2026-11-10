@@ -53,6 +53,9 @@ export const ChartCanvas: React.FC<ChartCanvasProps> = ({
     const option = buildEChartsOption(dataset, chartType, activeX, activeY);
 
     try {
+      // Clear previous coordinate systems completely to guarantee zero ghost elements or axis collisions
+      chartInstanceRef.current.clear();
+      // Set new option with full entrance animations
       chartInstanceRef.current.setOption(option, true);
     } catch (err) {
       console.warn('ECharts rendering error, auto-recovering instance:', err);
@@ -157,7 +160,7 @@ export const ChartCanvas: React.FC<ChartCanvasProps> = ({
           {/* Mapping Toggle */}
           <button
             onClick={() => setShowMapping(!showMapping)}
-            className={`p-1.5 rounded-lg border text-xs flex items-center gap-1 transition-colors ${
+            className={`p-1.5 rounded-lg border text-xs flex items-center gap-1 transition-colors cursor-pointer ${
               showMapping
                 ? 'bg-matte-black text-white border-matte-black'
                 : 'bg-white text-matte-muted hover:text-matte-black border-matte-border hover:bg-matte-subtle'
@@ -171,7 +174,7 @@ export const ChartCanvas: React.FC<ChartCanvasProps> = ({
           {/* Quick Diagnose CTA */}
           <button
             onClick={onOpenDiagnostic}
-            className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg border border-matte-border bg-matte-subtle hover:bg-zinc-200 text-matte-black font-medium transition-colors"
+            className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg border border-matte-border bg-matte-subtle hover:bg-zinc-200 text-matte-black font-medium transition-colors cursor-pointer"
           >
             <AlertCircle className="w-3.5 h-3.5 text-cobalt" />
             <span>Analyse</span>
