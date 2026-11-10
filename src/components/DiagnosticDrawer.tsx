@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, AlertCircle, CheckCircle2, AlertTriangle, XCircle, BookOpen, Scale, Eye } from 'lucide-react';
+import { X, AlertCircle, CheckCircle2, AlertTriangle, XCircle, BookOpen, Scale, Eye, ExternalLink } from 'lucide-react';
 import { ChartType, Dataset } from '../types';
 
 interface DiagnosticDrawerProps {
@@ -177,8 +177,21 @@ export const DiagnosticDrawer: React.FC<DiagnosticDrawerProps> = ({
             <p className="text-xs text-matte-muted mt-1 leading-relaxed">
               {dataset.description}
             </p>
-            <div className="mt-2 text-[11px] text-matte-muted border-t border-matte-border/50 pt-2 font-mono">
-              Quelle: {dataset.source}
+            <div className="mt-2 text-[11px] text-matte-muted border-t border-matte-border/50 pt-2 font-mono flex items-center gap-1.5 flex-wrap">
+              <span>Quelle:</span>
+              {dataset.sourceUrl ? (
+                <a
+                  href={dataset.sourceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-cobalt hover:underline inline-flex items-center gap-1"
+                >
+                  <span>{dataset.source}</span>
+                  <ExternalLink className="w-2.5 h-2.5" />
+                </a>
+              ) : (
+                <span>{dataset.source}</span>
+              )}
             </div>
           </div>
 

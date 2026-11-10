@@ -22,6 +22,7 @@ export interface Dataset {
   field: string;
   description: string;
   source: string;
+  sourceUrl?: string;
   recommendedType: ChartType;
   columns: DatasetColumn[];
   data: Record<string, any>[];

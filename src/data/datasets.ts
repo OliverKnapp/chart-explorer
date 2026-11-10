@@ -8,6 +8,7 @@ export const CURATED_DATASETS: Dataset[] = [
     field: 'Künstliche Intelligenz & Machine Learning',
     description: 'Vergleich von Parametermenge (Mrd.), MMLU-Benchmark-Genauigkeit (%) und Inferenz-Latenz (ms) über Generationen moderner Open-Weight- und Frontier-Sprachmodelle.',
     source: 'Epoch AI & LMSYS Chatbot Arena Benchmark Hub (2024)',
+    sourceUrl: 'https://epoch.ai/data/epochdb/table',
     recommendedType: 'scatter',
     columns: [
       { key: 'model', label: 'Modell', type: 'categorical' },
@@ -95,6 +96,7 @@ export const CURATED_DATASETS: Dataset[] = [
     field: 'Theoretische & Praktische Informatik',
     description: 'Empirische Ausführungszeit (ms) und Vergleichsoperationen beim Sortieren eines zufälligen Arrays ($N = 50.000$) auf identischer CPU-Architektur.',
     source: 'TU Wien Institut für Logic and Computation (Algorithmen-Benchmark)',
+    sourceUrl: 'https://algs4.cs.princeton.edu/20sorting/',
     recommendedType: 'bar',
     columns: [
       { key: 'algorithm', label: 'Algorithmus', type: 'categorical' },
@@ -180,6 +182,7 @@ export const CURATED_DATASETS: Dataset[] = [
     field: 'Software Engineering & Systemarchitektur',
     description: 'Verteilung des Quellcodes (Tausend Zeilen Code / KLOC) und Security-Advisories auf die Subsysteme einer modernen Browser-Engine (Chromium/WebKit).',
     source: 'Chromium Open Source Project & SonarQube Metrics (2024)',
+    sourceUrl: 'https://source.chromium.org/chromium/chromium/src',
     recommendedType: 'treemap',
     columns: [
       { key: 'subsystem', label: 'Subsystem', type: 'categorical' },
@@ -262,6 +265,7 @@ export const CURATED_DATASETS: Dataset[] = [
     field: 'Klimatologie & Atmosphärenphysik',
     description: 'Jährliche Abweichung der globalen kombinierten Land- und Ozeantemperaturen im Vergleich zum Mittelwert 1951–1980 in °C.',
     source: 'NASA GISS Surface Temperature Analysis (GISTEMP v4)',
+    sourceUrl: 'https://data.giss.nasa.gov/gistemp/',
     recommendedType: 'line',
     columns: [
       { key: 'year', label: 'Jahr', type: 'temporal' },
@@ -360,6 +364,7 @@ export const CURATED_DATASETS: Dataset[] = [
     field: 'Wirtschafts- & Sozialwissenschaften',
     description: 'Medianes monatliches Nettoeinkommen in EUR nach höchstem formalen Bildungsabschluss.',
     source: 'Statistik Austria & Eurostat Survey on Income and Living Conditions (EU-SILC)',
+    sourceUrl: 'https://ec.europa.eu/eurostat/web/microdata/european-union-statistics-on-income-and-living-conditions',
     recommendedType: 'bar',
     columns: [
       { key: 'education', label: 'Bildungsabschluss', type: 'categorical' },
@@ -441,6 +446,7 @@ export const CURATED_DATASETS: Dataset[] = [
     field: 'Ökologie & Artenschutz',
     description: 'Anzahl bedrohter Tierarten aufgeschlüsselt nach Lebensraum (Korallenriff, Regenwald, Feuchtgebiete, Tundra) und Tiergruppe.',
     source: 'IUCN Red List of Threatened Species (Global Conservation Database)',
+    sourceUrl: 'https://www.iucnredlist.org/',
     recommendedType: 'treemap',
     columns: [
       { key: 'habitat', label: 'Lebensraum', type: 'categorical' },
@@ -524,6 +530,7 @@ export const CURATED_DATASETS: Dataset[] = [
     field: 'Medizinische Biometrie & Pharmakologie',
     description: 'Messung der Plasma-Wirkstoffkonzentration (µg/ml) und des Auftretens von Nebenwirkungen bei steigender Dosis (mg).',
     source: 'Klinische Phase-II Dosierungsstudie (NIH Biometric Repository)',
+    sourceUrl: 'https://clinicaltrials.gov/',
     recommendedType: 'scatter',
     columns: [
       { key: 'dosage', label: 'Dosis (mg)', type: 'numeric', unit: 'mg' },

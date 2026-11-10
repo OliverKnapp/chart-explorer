@@ -6,7 +6,7 @@ import { ChartControlBubble } from './components/ChartControlBubble';
 import { DiagnosticDrawer } from './components/DiagnosticDrawer';
 import { DocumentationModal } from './components/DocumentationModal';
 import { CsvUploadModal } from './components/CsvUploadModal';
-import { FileText, Columns2, Square, BookOpen } from 'lucide-react';
+import { FileText, Columns2, Square, BookOpen, ExternalLink } from 'lucide-react';
 
 export function App() {
   const [datasets, setDatasets] = useState<Dataset[]>(CURATED_DATASETS);
@@ -61,10 +61,24 @@ export function App() {
               <h1 className="text-xl sm:text-2xl font-serif text-matte-black tracking-tight">
                 {activeDataset.title}
               </h1>
-              <span className="inline-flex items-center gap-1.5 text-xs text-matte-muted bg-matte-subtle border border-matte-border px-2.5 py-0.5 rounded-lg font-mono">
-                <BookOpen className="w-3.5 h-3.5 text-cobalt" />
-                <span>Quelle: {activeDataset.source}</span>
-              </span>
+              {activeDataset.sourceUrl ? (
+                <a
+                  href={activeDataset.sourceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs text-matte-black hover:text-cobalt bg-matte-subtle hover:bg-zinc-200 border border-matte-border px-2.5 py-0.5 rounded-lg font-mono transition-colors group cursor-pointer"
+                  title={`Originalquelle öffnen: ${activeDataset.sourceUrl}`}
+                >
+                  <BookOpen className="w-3.5 h-3.5 text-cobalt group-hover:scale-105 transition-transform" />
+                  <span>Quelle: {activeDataset.source}</span>
+                  <ExternalLink className="w-3 h-3 text-matte-muted group-hover:text-cobalt ml-0.5" />
+                </a>
+              ) : (
+                <span className="inline-flex items-center gap-1.5 text-xs text-matte-muted bg-matte-subtle border border-matte-border px-2.5 py-0.5 rounded-lg font-mono">
+                  <BookOpen className="w-3.5 h-3.5 text-cobalt" />
+                  <span>Quelle: {activeDataset.source}</span>
+                </span>
+              )}
             </div>
           </div>
 
