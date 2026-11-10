@@ -4,6 +4,8 @@
 > **Team:** Oliver Knapp (12616937) & Roman Krebs (12620369)  
 > **Tutor_innen:** Jessica Arabi, Bidha Shrestha  
 > **Denkweisen:** Creative Thinking & Scientific Thinking  
+> **Live Demo:** [https://oliverknapp.github.io/chart-explorer/](https://oliverknapp.github.io/chart-explorer/)  
+> **Repository:** [https://github.com/OliverKnapp/chart-explorer](https://github.com/OliverKnapp/chart-explorer)  
 
 ---
 
