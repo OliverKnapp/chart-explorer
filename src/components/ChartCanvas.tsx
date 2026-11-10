@@ -53,8 +53,6 @@ export const ChartCanvas: React.FC<ChartCanvasProps> = ({
     const option = buildEChartsOption(dataset, chartType, activeX, activeY);
 
     try {
-      // Pass true (notMerge: true) to clean up old axes, grids, radars, or visualMaps!
-      // Universal Transition morphs series with matching id between options.
       chartInstanceRef.current.setOption(option, true);
     } catch (err) {
       console.warn('ECharts rendering error, auto-recovering instance:', err);
@@ -135,14 +133,18 @@ export const ChartCanvas: React.FC<ChartCanvasProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-full bg-white rounded-xl border border-matte-border shadow-subtle overflow-hidden">
+    <div className="flex flex-col h-full w-full min-h-0 bg-white rounded-xl border border-matte-border shadow-subtle overflow-hidden">
       {/* Top Header */}
-      <div className="px-5 py-3.5 border-b border-matte-border flex items-center justify-between bg-white">
+      <div className="px-5 py-3.5 border-b border-matte-border flex items-center justify-between bg-white shrink-0">
         <div>
           <div className="flex items-center space-x-2">
             <h2 className="text-sm font-semibold text-matte-black">
               {chartLabels[chartType]}
-              {titleSuffix && <span className="text-matte-muted ml-1 font-normal">({titleSuffix})</span>}
+              {titleSuffix && (
+                <span className="text-xs font-mono font-bold px-1.5 py-0.2 rounded bg-matte-subtle text-matte-black ml-1.5 border border-matte-border">
+                  {titleSuffix}
+                </span>
+              )}
             </h2>
             {getStatusBadge()}
           </div>
@@ -179,7 +181,7 @@ export const ChartCanvas: React.FC<ChartCanvasProps> = ({
 
       {/* Optional Axis Mapping Bar */}
       {showMapping && (
-        <div className="px-5 py-2.5 bg-matte-subtle border-b border-matte-border flex flex-wrap items-center gap-4 text-xs">
+        <div className="px-5 py-2.5 bg-matte-subtle border-b border-matte-border flex flex-wrap items-center gap-4 text-xs shrink-0">
           <div className="flex items-center space-x-2">
             <span className="text-matte-muted font-medium">Primär-Achse / Kategorie (X):</span>
             <select
@@ -212,22 +214,16 @@ export const ChartCanvas: React.FC<ChartCanvasProps> = ({
         </div>
       )}
 
-      {/* Main ECharts Canvas */}
-      <div className="flex-1 w-full min-h-[380px] p-2 relative bg-white">
-        <div ref={chartRef} className="w-full h-full" />
+      {/* Main ECharts Canvas - Absolute bounded to avoid flex infinite resizing! */}
+      <div className="flex-1 w-full min-h-0 relative bg-white overflow-hidden">
+        <div ref={chartRef} className="absolute inset-0 w-full h-full" />
       </div>
 
-      {/* Bottom Sub-Bar: Headline of Diagnostic */}
-      <div className="px-5 py-2 border-t border-matte-border/60 bg-zinc-50/50 flex items-center justify-between text-xs">
+      {/* Bottom Sub-Bar: Clean Headline without redundant Details button */}
+      <div className="px-5 py-2 border-t border-matte-border/60 bg-zinc-50/50 flex items-center justify-between text-xs shrink-0">
         <span className="text-matte-muted truncate font-mono text-[11px]">
           {diagnostic ? diagnostic.headline : 'Keine Bewertung verfügbar'}
         </span>
-        <button
-          onClick={onOpenDiagnostic}
-          className="text-cobalt hover:underline text-[11px] font-medium shrink-0 ml-3"
-        >
-          Details $\rightarrow$
-        </button>
       </div>
     </div>
   );
