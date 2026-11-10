@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { CURATED_DATASETS } from './data/datasets';
 import { ChartType, Dataset } from './types';
 import { ChartCanvas } from './components/ChartCanvas';
-import { FloatingDock } from './components/FloatingDock';
+import { ChartControlBubble } from './components/ChartControlBubble';
 import { DiagnosticDrawer } from './components/DiagnosticDrawer';
 import { DocumentationModal } from './components/DocumentationModal';
 import { CsvUploadModal } from './components/CsvUploadModal';
@@ -36,11 +36,11 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-matte-black flex flex-col font-sans pb-32">
-      {/* Main Workspace */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 pt-6 pb-2 flex flex-col">
-        {/* Top Header Row with Dataset Information, Split-View Toggle and Dokumentation Button */}
-        <div className="mb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-matte-border pb-4">
+    <div className="min-h-screen bg-white text-matte-black flex flex-col font-sans pb-16">
+      {/* Main Container */}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 pt-6 pb-6 flex flex-col">
+        {/* Top Header Row with Dataset Title, Split-View Toggle and Dokumentation */}
+        <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-matte-border pb-4">
           <div>
             <div className="flex items-center space-x-2">
               <span className="text-base font-bold tracking-tight text-matte-black font-sans">
@@ -87,22 +87,39 @@ export function App() {
           </div>
         </div>
 
-        {/* Charts Container with strict height bounds to avoid any infinite flexbox growth */}
-        <div className="flex-1 w-full min-h-0">
-          {!isSplitView ? (
-            /* Single Hero View */
-            <div className="h-[580px] w-full min-h-0">
+        {/* Dynamic Canvas & Settings View */}
+        {!isSplitView ? (
+          /* Single Hero View: Chart on top, Control Bubble directly underneath */
+          <div className="flex flex-col space-y-4">
+            <div className="h-[560px] w-full min-h-0">
               <ChartCanvas
                 dataset={activeDataset}
                 chartType={primaryChartType}
                 onOpenDiagnostic={() => setIsDiagnosticOpen(true)}
               />
             </div>
-          ) : (
-            /* Split View: Two Charts Side-by-Side */
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 h-[580px] min-h-0">
-              {/* Left Chart A */}
-              <div className="h-full min-h-0 flex flex-col">
+
+            {/* Single Bubble directly below Hero Chart */}
+            <div className="flex justify-center w-full">
+              <div className="w-full max-w-4xl">
+                <ChartControlBubble
+                  datasets={datasets}
+                  activeDataset={activeDataset}
+                  onSelectDataset={handleDatasetChange}
+                  onOpenUpload={() => setIsUploadOpen(true)}
+                  activeChartType={primaryChartType}
+                  onSelectChartType={setPrimaryChartType}
+                  recommendedType={activeDataset.recommendedType}
+                />
+              </div>
+            </div>
+          </div>
+        ) : (
+          /* Split View: Two Columns Side-by-Side, each with its chart and its own bubble underneath */
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Column A */}
+            <div className="flex flex-col space-y-4 min-h-0">
+              <div className="h-[500px] w-full min-h-0">
                 <ChartCanvas
                   dataset={activeDataset}
                   chartType={primaryChartType}
@@ -111,8 +128,23 @@ export function App() {
                 />
               </div>
 
-              {/* Right Chart B */}
-              <div className="h-full min-h-0 flex flex-col">
+              {/* Bubble A: Directly below Diagram A */}
+              <ChartControlBubble
+                label="A"
+                badgeColor="black"
+                datasets={datasets}
+                activeDataset={activeDataset}
+                onSelectDataset={handleDatasetChange}
+                onOpenUpload={() => setIsUploadOpen(true)}
+                activeChartType={primaryChartType}
+                onSelectChartType={setPrimaryChartType}
+                recommendedType={activeDataset.recommendedType}
+              />
+            </div>
+
+            {/* Column B */}
+            <div className="flex flex-col space-y-4 min-h-0">
+              <div className="h-[500px] w-full min-h-0">
                 <ChartCanvas
                   dataset={activeDataset}
                   chartType={secondaryChartType}
@@ -120,23 +152,19 @@ export function App() {
                   onOpenDiagnostic={() => setIsDiagnosticOpen(true)}
                 />
               </div>
-            </div>
-          )}
-        </div>
-      </main>
 
-      {/* Floating Dock: Spawns Bubble A and Bubble B at the bottom in Split View */}
-      <FloatingDock
-        datasets={datasets}
-        activeDataset={activeDataset}
-        onSelectDataset={handleDatasetChange}
-        activeChartType={primaryChartType}
-        onSelectChartType={setPrimaryChartType}
-        secondaryChartType={secondaryChartType}
-        onSelectSecondaryChartType={setSecondaryChartType}
-        isSplitView={isSplitView}
-        onOpenUpload={() => setIsUploadOpen(true)}
-      />
+              {/* Bubble B: Directly below Diagram B */}
+              <ChartControlBubble
+                label="B"
+                badgeColor="cobalt"
+                activeChartType={secondaryChartType}
+                onSelectChartType={setSecondaryChartType}
+                recommendedType={activeDataset.recommendedType}
+              />
+            </div>
+          </div>
+        )}
+      </main>
 
       {/* Modals & Drawers */}
       <DiagnosticDrawer
