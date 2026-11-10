@@ -156,7 +156,7 @@ Der finale Gegenstand ist die voll funktionsfähige Web-Applikation **Chart-Expl
 - **Kern-Features:**
   1. *Universal Transition Engine:* Reibungslose Animation von Datenmarken beim Wechsel zwischen Balken-, Linien-, Scatter-, Pie-, Radar-, Treemap- und Heatmap-Diagrammen.
   2. *Dual-Modus:* Umschaltbar zwischen fokussiertem Hero-Canvas und Side-by-Side Split-View.
-  3. *Wissenschaftliche Datensätze:* Vorkonfigurierte Studien zu Klima, Sozioökonomie, Medizin und Biodiversität + CSV-Uploader.
+  3. *Wissenschaftliche Datensätze:* 7 vorkonfigurierte Studien inklusive zentraler Informatik- und KI-Datensätze (LLM-Skalierung/MMLU-Benchmark, Laufzeitkomplexität von Sortieralgorithmen, Modulgröße & Code-Komplexität von Browser-Engines sowie Klimatologie, Sozioökonomie, Medizin und Biodiversität) + CSV-Uploader.
   4. *Anti-Pattern Diagnostic Drawer:* Wissenschaftliche Aufschlüsselung nach Tufte & Cleveland-McGill.
   5. *Claude-inspiriertes Design:* Weißer Hintergrund, mattschwarze Strukturen, kobaltblaue Akzente, barrierefreie Typografie, Floating Pill-Dock.
 

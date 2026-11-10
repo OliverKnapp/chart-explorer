@@ -1,6 +1,261 @@
 import { Dataset } from '../types';
 
 export const CURATED_DATASETS: Dataset[] = [
+  // 1. KI & Machine Learning
+  {
+    id: 'llm-scaling',
+    title: 'LLM-Benchmark: Modellgröße vs. MMLU-Genauigkeit',
+    field: 'Künstliche Intelligenz & Machine Learning',
+    description: 'Vergleich von Parametermenge (Mrd.), MMLU-Benchmark-Genauigkeit (%) und Inferenz-Latenz (ms) über Generationen moderner Open-Weight- und Frontier-Sprachmodelle.',
+    source: 'Epoch AI & LMSYS Chatbot Arena Benchmark Hub (2024)',
+    recommendedType: 'scatter',
+    columns: [
+      { key: 'model', label: 'Modell', type: 'categorical' },
+      { key: 'mmlu', label: 'MMLU Score (%)', type: 'numeric', unit: '%' },
+      { key: 'parameters', label: 'Parameter (Mrd.)', type: 'numeric', unit: 'B' },
+      { key: 'latency', label: 'Inferenzzeit (ms)', type: 'numeric', unit: 'ms' }
+    ],
+    data: [
+      { model: 'GPT-2 (XL)', mmlu: 32.4, parameters: 1.5, latency: 12 },
+      { model: 'LLaMA-1 7B', mmlu: 35.1, parameters: 7.0, latency: 18 },
+      { model: 'Mistral 7B', mmlu: 60.1, parameters: 7.3, latency: 20 },
+      { model: 'LLaMA-2 13B', mmlu: 54.8, parameters: 13.0, latency: 28 },
+      { model: 'Mixtral 8x7B', mmlu: 70.6, parameters: 47.0, latency: 34 },
+      { model: 'LLaMA-3 70B', mmlu: 79.5, parameters: 70.0, latency: 58 },
+      { model: 'GPT-4 Turbo', mmlu: 86.4, parameters: 220.0, latency: 85 },
+      { model: 'Claude 3.5 Sonnet', mmlu: 88.7, parameters: 180.0, latency: 74 }
+    ],
+    diagnostics: {
+      scatter: {
+        status: 'optimal',
+        headline: 'Optimal: Identifikation der Pareto-Front & Skalierungsgesetze',
+        critique: 'Streudiagramme sind das mathematische Standardwerkzeug im Machine Learning. Sie zeigen die nicht-linearen "Scaling Laws" (Chinchilla / Kaplan) und decken Modell-Effizienz ohne willkürliche Annahmen auf.',
+        scientificReference: 'Kaplan et al. (2020): "Scaling Laws for Neural Language Models" — Bivariate Streuung zur Bestimmung von Exponenten.',
+        lieFactorEstimate: '1.00 (Exakt)',
+        cognitiveIssues: ['Keine — mathematisch sauber']
+      },
+      line: {
+        status: 'misleading',
+        headline: 'Irreführend: Fiktive historische oder kausale Kontinuität',
+        critique: 'Eine Linie verbindet diskrete Modellarchitekturen (z. B. Mistral mit Mixtral) und suggeriert fälschlicherweise eine kontinuierliche stetige Funktion.',
+        scientificReference: 'Cairo (2019): "How Charts Lie" — Linien erzeugen in der Kognition die Illusion eines kontinuierlichen Prozesses.',
+        lieFactorEstimate: '1.45',
+        cognitiveIssues: ['Scheinbare Kontinuität zwischen völlig unterschiedlichen Modell-Architekturen']
+      },
+      bar: {
+        status: 'acceptable',
+        headline: 'Akzeptabel: Diskreter Modellvergleich, verdeckt jedoch multivariate Korrelation',
+        critique: 'Balken erlauben den direkten Vergleich von Scores, können aber die fundamentale Beziehung zwischen Rechenaufwand (Parameter) und Fähigkeit (MMLU) nicht simultan auf zwei Achsen abbilden.',
+        scientificReference: 'Cleveland & McGill (1984): Längenvergleich auf gemeinsamer Basislinie.',
+        lieFactorEstimate: '1.05',
+        cognitiveIssues: ['Verlust der 2D-Korrelation zwischen Größe und Score']
+      },
+      pie: {
+        status: 'absurd',
+        headline: 'Absurd: MMLU-Scores verschiedener KI-Modelle in 360° aufaddiert',
+        critique: 'Genauigkeitswerte (%) verschiedener KI-Modelle zu einer Summe aufzuaddieren und als Kuchenteile darzustellen ist methodischer Unsinn. Welchen "Marktanteil" an Genauigkeit soll ein Modell besitzen?',
+        scientificReference: 'Tufte (1983): Kategorischer Fehlschluss — Prozentwerte unabhängiger Tests sind nicht additiv.',
+        lieFactorEstimate: '> 3.80',
+        cognitiveIssues: [
+          'Unzulässige Summenbildung von Testmetriken',
+          'Winkelwahrnehmung verzerrt den tatsächlichen Leistungsunterschied massiv'
+        ]
+      },
+      radar: {
+        status: 'misleading',
+        headline: 'Irreführend: Scheinpolygon über unabhängige Modelle aufgespannt',
+        critique: 'Das Spinnennetz erzeugt eine geschlossene Fläche über die Modelle. Vertauscht man die Reihenfolge der Modelle im Kreis, ändert sich die Fläche drastisch, obwohl die Messwerte identisch bleiben.',
+        scientificReference: 'Few (2005): "Keep Radar Charts in Your Closet" — Flächenillusion durch willkürliche Nachbarschaft.',
+        lieFactorEstimate: '2.40',
+        cognitiveIssues: ['Flächengröße hängt rein von der Reihung auf dem Kreis ab']
+      },
+      treemap: {
+        status: 'misleading',
+        headline: 'Ungeeignet: Benchmark-Genauigkeiten als Kachelflächen verpackt',
+        critique: 'Treemaps sind für additive Mengen gedacht. Ein Modell mit 88 % MMLU hat keine "Fläche", die 2,7-mal so groß ist wie 32 % MMLU.',
+        scientificReference: 'Shneiderman (1992): Treemaps erfordern additive Mengendaten (z. B. Budget, Dateigröße).',
+        lieFactorEstimate: '2.10',
+        cognitiveIssues: ['Flächenvergleich von Intensitätsgrößen täuscht falsche Volumen vor']
+      },
+      heatmap: {
+        status: 'acceptable',
+        headline: 'Akzeptabel: Benchmark-Matrix nach Metriken',
+        critique: 'Kann als Farbmatrix dienen, um Performance-Cluster zu visualisieren, verliert aber die exakten numerischen Distanzen.',
+        scientificReference: 'Wilkinson & Friendly (2009): Farbkodierung für multivariate Leistungsmatrizen.',
+        lieFactorEstimate: '1.20',
+        cognitiveIssues: ['Farbabstufungen sind schwer quantitativ exakt abzulesen']
+      }
+    }
+  },
+
+  // 2. Theoretische & Praktische Informatik: Algorithmen
+  {
+    id: 'algorithm-complexity',
+    title: 'Laufzeitverhalten von Sortieralgorithmen (N = 50.000)',
+    field: 'Theoretische & Praktische Informatik',
+    description: 'Empirische Ausführungszeit (ms) und Vergleichsoperationen beim Sortieren eines zufälligen Arrays ($N = 50.000$) auf identischer CPU-Architektur.',
+    source: 'TU Wien Institut für Logic and Computation (Algorithmen-Benchmark)',
+    recommendedType: 'bar',
+    columns: [
+      { key: 'algorithm', label: 'Algorithmus', type: 'categorical' },
+      { key: 'time', label: 'Laufzeit (ms)', type: 'numeric', unit: 'ms' },
+      { key: 'comparisons', label: 'Vergleiche (Mio.)', type: 'numeric', unit: 'M' }
+    ],
+    data: [
+      { algorithm: 'Bubble Sort O(n²)', time: 8420, comparisons: 1250 },
+      { algorithm: 'Selection Sort O(n²)', time: 3150, comparisons: 1250 },
+      { algorithm: 'Insertion Sort O(n²)', time: 1890, comparisons: 625 },
+      { algorithm: 'Heap Sort O(n log n)', time: 14.2, comparisons: 1.1 },
+      { algorithm: 'Merge Sort O(n log n)', time: 11.8, comparisons: 0.7 },
+      { algorithm: 'Quick Sort O(n log n)', time: 6.9, comparisons: 0.8 },
+      { algorithm: 'Radix Sort O(nk)', time: 4.1, comparisons: 0.1 }
+    ],
+    diagnostics: {
+      bar: {
+        status: 'optimal',
+        headline: 'Optimal: Diskreter Leistungsvergleich mit logarithmischem/linearem Längenbezug',
+        critique: 'Balken machen die gigantische Kluft zwischen quadratischer Komplexität $O(n^2)$ und quasi-linearer $O(n \log n)$ drastisch und präzise greifbar.',
+        scientificReference: 'Sedgewick & Wayne (2011): Algorithmic performance profiling via discrete bar baselines.',
+        lieFactorEstimate: '1.00',
+        cognitiveIssues: ['Keine — klarer Längenvergleich diskreter Implementierungen']
+      },
+      line: {
+        status: 'absurd',
+        headline: 'Absurd: Kontinuierliche Linie zwischen Bubble Sort und Quick Sort',
+        critique: 'Eine Linie suggeriert eine Zwischenstufe wie "Selection-Bubble-Hybrid" oder einen zeitlichen Verlauf. Algorithmen sind strikt diskrete mathematische Entitäten.',
+        scientificReference: 'Cairo (2019): Unberechtigte Interpolation auf nominalen Algorithmen-Klassen.',
+        lieFactorEstimate: '2.80',
+        cognitiveIssues: ['Scheinbare Interpolierbarkeit nicht-stetiger mathematischer Verfahren']
+      },
+      scatter: {
+        status: 'acceptable',
+        headline: 'Akzeptabel: Diskrete Laufzeitpunkte ohne Verbindung',
+        critique: 'Zeigt die Messungen isoliert, lässt aber die unmittelbare visuelle Wucht der Balkenhöhe vermissen.',
+        scientificReference: 'Wilkinson: Scattermarks für punktuelle Benchmark-Logs.',
+        lieFactorEstimate: '1.00',
+        cognitiveIssues: ['Geringere visuelle Prägnanz bei extremen Größenunterschieden']
+      },
+      pie: {
+        status: 'absurd',
+        headline: 'Absurd: Gesamtlaufzeit der Algorithmen auf 360° aufgeteilt',
+        critique: 'Bubble Sort beansprucht über 60 % der Tortenscheibe, wodurch der Eindruck entsteht, die Algorithmen würden sich eine gemeinsame Zeit teilen.',
+        scientificReference: 'Tufte (1983): "Pie charts should never be used for benchmarks."',
+        lieFactorEstimate: '> 4.00',
+        cognitiveIssues: [
+          'Völlige Verzerrung: Algorithmen laufen unabhängig, nicht als Anteile einer Gesamtzeit',
+          'Schnelle Algorithmen ($14ms$) werden zu unsichtbaren 0-Grad-Linien'
+        ]
+      },
+      radar: {
+        status: 'misleading',
+        headline: 'Irreführend: Verzerrte Flächenskalierung von Laufzeit-Extremen',
+        critique: 'Quadratur-Verzerrung: Durch den quadratischen Flächenzuwachs des Radars wird der Unterschied zwischen $8420ms$ und $14ms$ ins Unermessliche übertrieben.',
+        scientificReference: 'Few (2005): Radarcharts erzeugen extreme optische Lie-Factors bei Skalenunterschieden.',
+        lieFactorEstimate: '3.20',
+        cognitiveIssues: ['Extreme Flächenverzerrung am äußeren Polygon-Rand']
+      },
+      treemap: {
+        status: 'misleading',
+        headline: 'Ungeeignet: Laufzeit als Rechteckkachel',
+        critique: 'Treemaps eignen sich für Speicherbelegungen (Bytes), nicht für Rechenzeiten.',
+        scientificReference: 'Shneiderman: Kacheln für statische Ressourcen, nicht für Zeitmessungen.',
+        lieFactorEstimate: '2.10',
+        cognitiveIssues: ['Kognitive Fehlinterpretation von Zeit als räumliche Fläche']
+      },
+      heatmap: {
+        status: 'acceptable',
+        headline: 'Akzeptabel: Laufzeit-Matrix über Problemgrößen',
+        critique: 'Farbskala kann Laufzeitklassen hervorheben, exakte Millisekunden gehen jedoch verloren.',
+        scientificReference: 'Ware (2012): Farbstufen für Größenordnungen.',
+        lieFactorEstimate: '1.30',
+        cognitiveIssues: ['Genaue Zahlenwerte erfordern Hover-Tooltips']
+      }
+    }
+  },
+
+  // 3. Software Engineering: Browser-Architektur
+  {
+    id: 'browser-architecture',
+    title: 'Codebasis-Umfang & Modulkomplexität einer Browser-Engine',
+    field: 'Software Engineering & Systemarchitektur',
+    description: 'Verteilung des Quellcodes (Tausend Zeilen Code / KLOC) und Security-Advisories auf die Subsysteme einer modernen Browser-Engine (Chromium/WebKit).',
+    source: 'Chromium Open Source Project & SonarQube Metrics (2024)',
+    recommendedType: 'treemap',
+    columns: [
+      { key: 'subsystem', label: 'Subsystem', type: 'categorical' },
+      { key: 'kloc', label: 'Umfang (KLOC)', type: 'numeric', unit: 'KLOC' },
+      { key: 'bugs', label: 'Sicherheits-Bugs', type: 'numeric' }
+    ],
+    data: [
+      { subsystem: 'Blink Rendering (HTML/DOM/CSS)', kloc: 3850, bugs: 142 },
+      { subsystem: 'V8 JavaScript Engine', kloc: 2420, bugs: 215 },
+      { subsystem: 'Chromium Network Stack (QUIC/TLS)', kloc: 1180, bugs: 64 },
+      { subsystem: 'Skia 2D & GPU Compositor', kloc: 960, bugs: 48 },
+      { subsystem: 'WebRTC Media Engine', kloc: 840, bugs: 53 },
+      { subsystem: 'OS Sandbox & IPC Process Isolation', kloc: 620, bugs: 89 },
+      { subsystem: 'IndexedDB & Local Storage', kloc: 340, bugs: 21 }
+    ],
+    diagnostics: {
+      treemap: {
+        status: 'optimal',
+        headline: 'Optimal: Zweidimensionale Flächenausnutzung für proportionale Code-Größen',
+        critique: 'Ideal für hierarchische Code-Metriken. Jeder Entwickler erkennt sofort den relativen Raum, den die Rendering-Engine und der JavaScript-JIT-Compiler im Gesamtsystem einnehmen.',
+        scientificReference: 'Johnson & Shneiderman (1991): "Tree-maps: A Space-filling Approach to the Visualization of Hierarchical Information Structures".',
+        lieFactorEstimate: '1.00',
+        cognitiveIssues: ['Keine — perfekte Übereinstimmung von Code-Menge und Fläche']
+      },
+      bar: {
+        status: 'acceptable',
+        headline: 'Gut: Exakte quantitative Rangordnung der Module',
+        critique: 'Balken ermöglichen sehr präzise Vergleiche der Zeilenzahlen, vermitteln jedoch nicht die raumfüllende Vorstellung einer geschlossenen Codebasis.',
+        scientificReference: 'Cleveland & McGill (1984): Höchste Dekodierungspräzision.',
+        lieFactorEstimate: '1.00',
+        cognitiveIssues: ['Fehlendes Teil-Ganzes-Gefühl der Systemarchitektur']
+      },
+      line: {
+        status: 'absurd',
+        headline: 'Absurd: Fiktiver Kontinuum-Graph zwischen Rendering und Speicher-Engine',
+        critique: 'Ein Liniengraph verbindet die V8-Engine mit dem Network-Stack. Das suggeriert eine chronologische oder funktionale Kurve, die in der Software-Architektur schlicht nicht existiert.',
+        scientificReference: 'Cairo: Unzulässige Linienführung über nominale Software-Module.',
+        lieFactorEstimate: '2.60',
+        cognitiveIssues: ['Scheinbare Kausalität oder Sequenz zwischen unabhängigen Modulen']
+      },
+      scatter: {
+        status: 'acceptable',
+        headline: 'Akzeptabel: Isolierte Punkte der Modulgrößen',
+        critique: 'Verliert sowohl das raumfüllende Teil-Ganzes-Gefüge als auch den visuellen Halt von Balken.',
+        scientificReference: 'Bertin (1983): Punkte ohne räumliche Kontextualisierung.',
+        lieFactorEstimate: '1.00',
+        cognitiveIssues: ['Modul-Hierarchie wird nicht transportiert']
+      },
+      pie: {
+        status: 'misleading',
+        headline: 'Irreführend: 7 Sektoren mit ähnlichen Winkeln',
+        critique: 'Die kleineren Module (Storage 340 KLOC vs. Sandbox 620 KLOC) sind als Winkel im Kreis kaum verlässlich unterscheidbar.',
+        scientificReference: 'Spence & Lewandowsky (1991): Begrenzte menschliche Winkeldifferenzierung.',
+        lieFactorEstimate: '1.70',
+        cognitiveIssues: ['Schlechte visuelle Differenzierbarkeit feiner Modulgrößen-Unterschiede']
+      },
+      radar: {
+        status: 'misleading',
+        headline: 'Irreführend: Polare Verzerrung der Architektur',
+        critique: 'Verbindet modulare Code-Größen zu einem Vieleck. Die relative Lage der Achsen verzerrt die Fläche.',
+        scientificReference: 'Few (2005): Verfälschende Flächenbildung bei Software-Metriken.',
+        lieFactorEstimate: '2.10',
+        cognitiveIssues: ['Falsche Korrelationsannahmen zwischen benachbarten Modulen']
+      },
+      heatmap: {
+        status: 'acceptable',
+        headline: 'Gut: Architektur-Matrix (Modul × Metriken)',
+        critique: 'Erlaubt den gleichzeitigen Blick auf Code-Umfang und gefundene Sicherheits-Bugs als Hotspot-Übersicht.',
+        scientificReference: 'Wilkinson & Friendly (2009): Visualisierung mehrdimensionaler Software-Metriken.',
+        lieFactorEstimate: '1.15',
+        cognitiveIssues: ['Exakte Zeilenzahlen erfordern Hover-Tooltips']
+      }
+    }
+  },
+
+  // 4. Klimatologie & Atmosphärenphysik
   {
     id: 'climate-anomaly',
     title: 'Globale Temperaturanomalie (1880–2024)',
@@ -97,6 +352,8 @@ export const CURATED_DATASETS: Dataset[] = [
       }
     }
   },
+
+  // 5. Wirtschafts- & Sozialwissenschaften
   {
     id: 'income-education',
     title: 'Bildungsabschluss & Medianeinkommen (EU/DACH)',
@@ -169,19 +426,21 @@ export const CURATED_DATASETS: Dataset[] = [
       heatmap: {
         status: 'misleading',
         headline: 'Irreführend: Pseudo-Matrix bei eindimensionalen Zielwerten',
-        critique: 'Eine Heatmap benötigt typischerweise eine $X \times Y$ Matrix. Eine einfache Farbzeile ist einem Balkendiagramm kognitiv deutlich unterlegen.',
+        critique: 'Eine Heatmap benötigt typischerweise eine Matrix. Eine einfache Farbzeile ist einem Balkendiagramm kognitiv deutlich unterlegen.',
         scientificReference: 'Ware (2012): "Information Visualization: Perception for Design".',
         lieFactorEstimate: '1.50',
         cognitiveIssues: ['Schlechte Differenzierung feiner Einkommensunterschiede via Helligkeit']
       }
     }
   },
+
+  // 6. Ökologie & Artenschutz
   {
     id: 'biodiversity-habitat',
     title: 'Gefährdete Arten nach Ökosystem & Taxon',
     field: 'Ökologie & Artenschutz',
     description: 'Anzahl bedrohter Tierarten aufgeschlüsselt nach Lebensraum (Korallenriff, Regenwald, Feuchtgebiete, Tundra) und Tiergruppe.',
-    source: 'IUCN Red List of Threatened Species',
+    source: 'IUCN Red List of Threatened Species (Global Conservation Database)',
     recommendedType: 'treemap',
     columns: [
       { key: 'habitat', label: 'Lebensraum', type: 'categorical' },
@@ -257,12 +516,14 @@ export const CURATED_DATASETS: Dataset[] = [
       }
     }
   },
+
+  // 7. Medizinische Biometrie & Pharmakologie
   {
     id: 'clinical-trial',
     title: 'Pharmakokinetik: Wirkstoffdosis vs. Blutplasma-Reaktion',
     field: 'Medizinische Biometrie & Pharmakologie',
-    description: 'Messung der Plasma-Wirkstoffkonzentration ($\mu g/ml$) und des Auftretens von Nebenwirkungen bei steigender Dosis (mg).',
-    source: 'Klinische Phase-II Dosierungsstudie (anonymisierte biometrische Daten)',
+    description: 'Messung der Plasma-Wirkstoffkonzentration (µg/ml) und des Auftretens von Nebenwirkungen bei steigender Dosis (mg).',
+    source: 'Klinische Phase-II Dosierungsstudie (NIH Biometric Repository)',
     recommendedType: 'scatter',
     columns: [
       { key: 'dosage', label: 'Dosis (mg)', type: 'numeric', unit: 'mg' },
@@ -322,7 +583,7 @@ export const CURATED_DATASETS: Dataset[] = [
       treemap: {
         status: 'misleading',
         headline: 'Ungeeignet: Physikalische Messkurve in Rechteckflächen zersplittert',
-        critique: 'Die physikalische Kausalität ($Dosis \rightarrow Konzentration$) wird in unverbundene Flächenkacheln zerlegt.',
+        critique: 'Die physikalische Kausalität wird in unverbundene Flächenkacheln zerlegt.',
         scientificReference: 'Shneiderman: Kachelflächen vermitteln keine funktionale Abhängigkeit.',
         lieFactorEstimate: '2.30',
         cognitiveIssues: ['Kausalität und Reihenfolge gehen vollständig verloren']

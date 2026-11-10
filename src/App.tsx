@@ -6,14 +6,14 @@ import { ChartControlBubble } from './components/ChartControlBubble';
 import { DiagnosticDrawer } from './components/DiagnosticDrawer';
 import { DocumentationModal } from './components/DocumentationModal';
 import { CsvUploadModal } from './components/CsvUploadModal';
-import { FileText, Columns2, Square } from 'lucide-react';
+import { FileText, Columns2, Square, BookOpen } from 'lucide-react';
 
 export function App() {
   const [datasets, setDatasets] = useState<Dataset[]>(CURATED_DATASETS);
   const [activeDataset, setActiveDataset] = useState<Dataset>(CURATED_DATASETS[0]);
   
   // Chart types
-  const [primaryChartType, setPrimaryChartType] = useState<ChartType>('line');
+  const [primaryChartType, setPrimaryChartType] = useState<ChartType>(CURATED_DATASETS[0].recommendedType);
   const [secondaryChartType, setSecondaryChartType] = useState<ChartType>('pie');
   
   // Views and Modals
@@ -39,7 +39,7 @@ export function App() {
     <div className="min-h-screen bg-white text-matte-black flex flex-col font-sans pb-16">
       {/* Main Container */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 pt-6 pb-6 flex flex-col">
-        {/* Top Header Row with Dataset Title, Split-View Toggle and Dokumentation */}
+        {/* Top Header Row with Dataset Title, Source, Split-View Toggle and Dokumentation */}
         <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-matte-border pb-4">
           <div>
             <div className="flex items-center space-x-2">
@@ -55,9 +55,17 @@ export function App() {
                 Empfohlen: {activeDataset.recommendedType.toUpperCase()}
               </span>
             </div>
-            <h1 className="text-xl sm:text-2xl font-serif text-matte-black mt-1 tracking-tight">
-              {activeDataset.title}
-            </h1>
+            
+            {/* Title and Source Badge side-by-side */}
+            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1.5 mt-1.5">
+              <h1 className="text-xl sm:text-2xl font-serif text-matte-black tracking-tight">
+                {activeDataset.title}
+              </h1>
+              <span className="inline-flex items-center gap-1.5 text-xs text-matte-muted bg-matte-subtle border border-matte-border px-2.5 py-0.5 rounded-lg font-mono">
+                <BookOpen className="w-3.5 h-3.5 text-cobalt" />
+                <span>Quelle: {activeDataset.source}</span>
+              </span>
+            </div>
           </div>
 
           {/* Action buttons: Split-View Toggle and Dokumentation */}
